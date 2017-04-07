@@ -69,12 +69,11 @@ from the geometry you've drawn.
 
 ==================================*/
 
-
 /** Notice the use of L.Map here. This is an extension of an organizational strategy we've already discussed. */
 var app = {
-  apikey: "3a5ff146a6e40b37b835932405e7417d7154d587",
-  map: L.map('map', { center: [40.75583970971843, -73.795166015625], zoom: 3 }),
-  geojsonClient: new cartodb.SQL({ user: 'moradology', format: 'geojson' }),
+  apikey: "0d0b0226-1643-11e7-ad01-0e3ff518bd15",
+  map: L.map('map', { center: [20.0, 50.0], zoom: 3 }),
+  geojsonClient: new cartodb.SQL({ user: 'dorcas25sg', format: 'geojson' }),
   drawnItems: new L.FeatureGroup()
 };
 
@@ -86,8 +85,21 @@ L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
   ext: 'png'
 }).addTo(app.map);
 
+function checkTextField(field) {
+    if ($('#country').val() === "") {
+        alert("Country field is empty");
+    }
+}
+
+$( ".gogo" ).click(function() {
+  checkTextField();
+var countryInput = $('#country').val()[0].toUpperCase() + $('#country').val().slice(1); //ensures that first letter is upper case
+console.log(countryInput);
+var sql ="SELECT * FROM drones AS d WHERE d.country = '"+ countryInput +"'";
+console.log(sql);
+
 // The initial query by which we map the geojson representation of a table
-app.geojsonClient.execute("SELECT * FROM world_borders") // 'LIMIT' should be added to the end of this line
+app.geojsonClient.execute(sql) // 'LIMIT' should be added to the end of this line
   .done(function(data) {
     L.geoJson(data, {
       onEachFeature: function(feature, layer) {
@@ -97,7 +109,7 @@ app.geojsonClient.execute("SELECT * FROM world_borders") // 'LIMIT' should be ad
   })
   .error(function(errors) {
   });
-
+});
 // Leaflet draw setup
 app.map.addLayer(app.drawnItems);
 
@@ -119,8 +131,8 @@ app.map.addControl(
 
 // Automatically fill the form on the left from geojson response
 var fillForm = function(properties) {
-  $('#cartodb_id').val(properties.cartodb_id);
-  $('#name').val(properties.name);
+  $('#cartodb_id').val(properties.total_avg);
+  $('#name').val(properties.target_type);
 };
 
 // Handling the creation of Leaflet.Draw layers
