@@ -120,7 +120,7 @@ app.map.addControl(
       featureGroup: app.drawnItems
     },
     draw: {
-      rectangle: false,
+      rectangle: true,
       polyline: false,
       polygon: false,
       marker: false,
